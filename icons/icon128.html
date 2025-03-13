@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>临时邮箱图标生成器</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f5f5f5;
+      font-family: Arial, sans-serif;
+    }
+    .icon-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+    .icon {
+      width: 128px;
+      height: 128px;
+      background-color: #4285f4;
+      border-radius: 20%;
+      position: relative;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    .envelope {
+      position: absolute;
+      width: 70%;
+      height: 50%;
+      background-color: white;
+      top: 25%;
+      left: 15%;
+      border-radius: 4px;
+    }
+    .envelope:before {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-left: 45px solid transparent;
+      border-right: 45px solid transparent;
+      border-bottom: 30px solid #f2f2f2;
+      top: -15px;
+      left: 0;
+    }
+    .clock {
+      position: absolute;
+      width: 30%;
+      height: 30%;
+      background-color: #ff5252;
+      border-radius: 50%;
+      right: 15%;
+      top: 15%;
+      border: 2px solid white;
+    }
+    .clock:before {
+      content: "";
+      position: absolute;
+      height: 40%;
+      width: 2px;
+      background-color: white;
+      top: 20%;
+      left: calc(50% - 1px);
+      transform-origin: bottom;
+      transform: rotate(-45deg);
+    }
+    .clock:after {
+      content: "";
+      position: absolute;
+      height: 30%;
+      width: 2px;
+      background-color: white;
+      top: 20%;
+      left: calc(50% - 1px);
+      transform-origin: bottom;
+      transform: rotate(45deg);
+    }
+    .lines {
+      position: absolute;
+      width: 60%;
+      height: 2px;
+      background-color: #e0e0e0;
+      top: 40%;
+      left: 20%;
+    }
+    .lines:before {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 2px;
+      background-color: #e0e0e0;
+      top: 8px;
+    }
+    .lines:after {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 2px;
+      background-color: #e0e0e0;
+      top: 16px;
+    }
+    svg {
+      margin-top: 30px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #4285f4;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    button:hover {
+      background-color: #3367d6;
+    }
+  </style>
+</head>
+<body>
+  <div class="icon-container">
+    <h2>临时邮箱图标</h2>
+    <div class="icon">
+      <div class="envelope">
+        <div class="lines"></div>
+      </div>
+      <div class="clock"></div>
+    </div>
+    
+    <svg id="icon-svg" width="128" height="128" viewBox="0 0 128 128">
+      <rect width="128" height="128" rx="25.6" fill="#4285f4"/>
+      <rect x="19.2" y="32" width="89.6" height="64" rx="5.12" fill="white"/>
+      <path d="M19.2 38.4L64 64L108.8 38.4" stroke="#e0e0e0" stroke-width="3.84"/>
+      <circle cx="89.6" cy="38.4" r="19.2" fill="#ff5252" stroke="white" stroke-width="2.56"/>
+      <path d="M89.6 33.28L83.2 44.8h12.8L89.6 33.28z" fill="white"/>
+      <line x1="38.4" y1="51.2" x2="89.6" y2="51.2" stroke="#e0e0e0" stroke-width="2.56"/>
+      <line x1="38.4" y1="64" x2="89.6" y2="64" stroke="#e0e0e0" stroke-width="2.56"/>
+      <line x1="38.4" y1="76.8" x2="89.6" y2="76.8" stroke="#e0e0e0" stroke-width="2.56"/>
+    </svg>
+    
+    <div>
+      <button id="download-128">下载128x128图标</button>
+      <button id="download-48">下载48x48图标</button>
+      <button id="download-32">下载32x32图标</button>
+      <button id="download-16">下载16x16图标</button>
+    </div>
+  </div>
+
+  <script>
+    // 下载图标函数
+    function downloadIcon(size) {
+      const svg = document.getElementById('icon-svg');
+      const svgData = new XMLSerializer().serializeToString(svg);
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      
+      const img = new Image();
+      img.onload = function() {
+        ctx.drawImage(img, 0, 0, size, size);
+        const link = document.createElement('a');
+        link.download = `icon${size}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      };
+      
+      img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+    }
+    
+    document.getElementById('download-128').addEventListener('click', () => downloadIcon(128));
+    document.getElementById('download-48').addEventListener('click', () => downloadIcon(48));
+    document.getElementById('download-32').addEventListener('click', () => downloadIcon(32));
+    document.getElementById('download-16').addEventListener('click', () => downloadIcon(16));
+  </script>
+</body>
+</html> 

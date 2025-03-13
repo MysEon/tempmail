@@ -1,0 +1,52 @@
+{
+  "manifest_version": 3,
+  "name": "临时邮箱",
+  "description": "生成临时邮箱，接收邮件，保护隐私",
+  "version": "1.0",
+  "permissions": [
+    "storage",
+    "notifications",
+    "alarms",
+    "contextMenus",
+    "activeTab",
+    "tabs",
+    "sidePanel"
+  ],
+  "host_permissions": [
+    "https://mail.cx/*"
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_title": "临时邮箱",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["icons/*", "sidebar.html"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "side_panel": {
+    "default_path": "sidebar.html"
+  }
+} 

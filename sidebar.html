@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>临时邮箱 - 侧边栏</title>
+  <style>
+    :root {
+      --primary-color: #4285f4;
+      --primary-dark: #3367d6;
+      --accent-color: #ff5252;
+      --text-color: #333;
+      --text-secondary: #666;
+      --bg-color: #fff;
+      --bg-light: #f5f8ff;
+      --border-color: #e0e0e0;
+      --shadow-color: rgba(0, 0, 0, 0.1);
+    }
+    
+    /* 暗黑模式样式 */
+    [data-theme="dark"] {
+      --primary-color: #5c9aff;
+      --primary-dark: #4285f4;
+      --accent-color: #ff6b6b;
+      --text-color: #e0e0e0;
+      --text-secondary: #aaaaaa;
+      --bg-color: #202124;
+      --bg-light: #303134;
+      --border-color: #444444;
+      --shadow-color: rgba(0, 0, 0, 0.3);
+    }
+    
+    body {
+      font-family: 'Microsoft YaHei', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      box-sizing: border-box;
+      overflow: hidden;
+      background-color: var(--bg-light);
+      color: var(--text-color);
+    }
+    
+    .sidebar-header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: 0 2px 8px var(--shadow-color);
+      position: relative;
+    }
+    
+    .email-info {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .header-title {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    
+    .header-icon {
+      width: 24px;
+      height: 24px;
+      margin-right: 10px;
+    }
+    
+    .header-text {
+      font-size: 18px;
+      font-weight: 500;
+    }
+    
+    #email-address {
+      font-weight: bold;
+      font-size: 15px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 230px;
+      white-space: nowrap;
+      transition: all 0.3s;
+      padding: 6px 0;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .refresh-btn-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+      margin-bottom: 5px;
+    }
+    
+    #refresh-emails, #copy-email, #close-sidebar {
+      background-color: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      padding: 8px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 13px;
+    }
+    
+    #refresh-emails {
+      padding: 8px 20px;
+      margin: 0 auto;
+    }
+    
+    #refresh-emails:hover, #copy-email:hover, #close-sidebar:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+    
+    #refresh-emails:active, #copy-email:active, #close-sidebar:active {
+      transform: translateY(0);
+    }
+    
+    #email-status {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.8);
+      padding: 4px 0;
+      text-align: center;
+    }
+    
+    .sidebar-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 15px;
+      background-color: var(--bg-color);
+      width: 100%;
+      box-sizing: border-box;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    
+    /* 邮件列表样式 */
+    #emails-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+    }
+    
+    .email-item {
+      padding: 14px;
+      background-color: var(--bg-color);
+      border-radius: 8px;
+      box-shadow: 0 2px 5px var(--shadow-color);
+      cursor: pointer;
+      transition: all 0.3s;
+      width: 100%;
+      box-sizing: border-box;
+      border-left: 3px solid transparent;
+    }
+    
+    .email-item:hover {
+      transform: translateX(3px);
+      box-shadow: 0 4px 8px var(--shadow-color);
+    }
+    
+    .email-unread {
+      border-left: 3px solid var(--accent-color);
+    }
+    
+    .email-subject {
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: var(--text-color);
+      word-break: break-word;
+    }
+    
+    .email-from, .email-date {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+    
+    .no-emails, .loading {
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-style: italic;
+      background-color: var(--bg-light);
+      border-radius: 8px;
+      box-shadow: 0 2px 5px var(--shadow-color);
+      margin: 20px 0;
+    }
+    
+    /* 加载动画 */
+    .loading-spinner {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border: 2px solid rgba(66, 133, 244, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--primary-color);
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* 邮件内容查看样式 */
+    #email-content {
+      display: none;
+      flex-direction: column;
+      background-color: var(--bg-color);
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 2;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .email-content-header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    #back-to-list {
+      align-self: flex-start;
+      background-color: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 8px;
+    }
+    
+    #back-to-list:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+    
+    #email-content-subject {
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 5px;
+      word-break: break-word;
+    }
+    
+    #email-content-from, #email-content-date {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    
+    #email-content-message {
+      padding: 0;
+      overflow-y: auto;
+      flex: 1;
+      background-color: var(--bg-light);
+      display: flex;
+      justify-content: center;
+    }
+    
+    .email-content-body {
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      flex: 1;
+      overflow-y: auto;
+      background-color: var(--bg-light);
+    }
+    
+    #email-content-message img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+      margin: 10px 0;
+    }
+    
+    /* 确保邮件内容正确显示 */
+    #email-content-message table, 
+    #email-content-message td, 
+    #email-content-message th, 
+    #email-content-message div {
+      max-width: 100% !important;
+      width: auto !important;
+      height: auto !important;
+      box-sizing: border-box;
+    }
+    
+    /* 修复表格显示 */
+    #email-content-message table {
+      display: block;
+      overflow-x: auto;
+      width: 100% !important;
+    }
+    
+    /* 添加更强的样式限制，确保内容不会溢出 */
+    #email-content-message * {
+      max-width: 100%;
+      word-break: break-word;
+      overflow-wrap: break-word;
+    }
+    
+    /* 响应式调整 */
+    @media (max-width: 600px) {
+      .sidebar-header {
+        padding: 12px;
+      }
+      
+      #email-address {
+        max-width: 180px;
+        font-size: 14px;
+      }
+      
+      .action-buttons {
+        gap: 6px;
+      }
+      
+      #refresh-emails, #copy-email, #close-sidebar {
+        padding: 6px 8px;
+        font-size: 12px;
+      }
+    }
+    
+    /* 主题切换按钮 */
+    .theme-switch {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 30px;
+      height: 30px;
+      background-color: rgba(255, 255, 255, 0.2);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.3s;
+      z-index: 11;
+    }
+    
+    .theme-switch:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+      transform: none;
+    }
+    
+    .theme-switch svg {
+      width: 18px;
+      height: 18px;
+      fill: white;
+      transition: all 0.3s;
+    }
+    
+    [data-theme="dark"] .theme-switch-sun {
+      display: block;
+    }
+    
+    [data-theme="dark"] .theme-switch-moon {
+      display: none;
+    }
+    
+    [data-theme="light"] .theme-switch-sun {
+      display: none;
+    }
+    
+    [data-theme="light"] .theme-switch-moon {
+      display: block;
+    }
+    
+    /* 下载状态样式 */
+    .download-status {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 15px 20px;
+      background-color: var(--bg-color);
+      box-shadow: 0 2px 10px var(--shadow-color);
+      border-radius: 8px;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      min-width: 250px;
+    }
+    
+    .download-success {
+      display: flex;
+      align-items: center;
+      color: #4caf50;
+    }
+    
+    .download-error {
+      display: flex;
+      align-items: center;
+      color: #f44336;
+    }
+    
+    .download-success svg, .download-error svg {
+      margin-right: 8px;
+    }
+    
+    /* 导出按钮样式 */
+    .email-export-options {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    
+    .export-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 12px;
+      border-radius: 4px;
+      background-color: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+    
+    .export-btn:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+    
+    .export-btn svg {
+      stroke: white;
+      width: 16px;
+      height: 16px;
+    }
+    
+    /* 添加邮件加载动画 */
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      text-align: center;
+    }
+    
+    .loading-spinner {
+      border: 3px solid rgba(66, 133, 244, 0.3);
+      border-radius: 50%;
+      border-top: 3px solid var(--primary-color);
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 15px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar-header">
+    <div class="header-title">
+      <img src="icons/icon32.png" alt="临时邮箱" class="header-icon">
+      <div class="header-text">临时邮箱</div>
+    </div>
+    <div class="email-info">
+      <div id="email-address">加载中...</div>
+      <div class="action-buttons">
+        <button id="copy-email" title="复制邮箱地址">复制</button>
+        <button id="close-sidebar" title="关闭侧边栏">关闭</button>
+      </div>
+    </div>
+    <div class="refresh-btn-container">
+      <button id="refresh-emails" title="刷新邮件">刷新邮件</button>
+    </div>
+    <div id="email-status">正在加载...</div>
+    
+    <div class="theme-switch" title="切换主题">
+      <svg class="theme-switch-sun" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+        <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zm1.414 1.414a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 10a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm11-2a1 1 0 110 2h-1a1 1 0 110-2h1zm-7 4a2 2 0 11-4 0 2 2 0 014 0z" />
+      </svg>
+      <svg class="theme-switch-moon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+      </svg>
+    </div>
+  </div>
+  
+  <div class="sidebar-content">
+    <div id="emails-container">
+      <div class="loading">
+        <div class="loading-spinner"></div>
+        <span>正在加载邮件...</span>
+      </div>
+    </div>
+  </div>
+  
+  <div id="email-content">
+    <div class="email-content-header">
+      <button id="back-to-list">返回列表</button>
+      <div id="email-content-subject">加载中...</div>
+      <div id="email-content-from"></div>
+      <div id="email-content-date"></div>
+      <div class="email-export-options">
+        <button id="export-pdf-sidebar" class="export-btn" title="导出为PDF">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+          导出PDF
+        </button>
+        <button id="export-html-sidebar" class="export-btn" title="导出为HTML">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="4 7 4 4 20 4 20 7"></polyline>
+            <line x1="9" y1="20" x2="15" y2="20"></line>
+            <line x1="12" y1="4" x2="12" y2="20"></line>
+          </svg>
+          导出HTML
+        </button>
+      </div>
+    </div>
+    <div class="email-content-body">
+      <div id="email-content-message"></div>
+    </div>
+  </div>
+  
+  <script src="sidebar.js"></script>
+</body>
+</html> 

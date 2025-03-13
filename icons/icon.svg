@@ -1,0 +1,22 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="128" height="128" rx="24" fill="#4285f4"/>
+  
+  <!-- 信封 -->
+  <rect x="20" y="32" width="88" height="64" rx="6" fill="white"/>
+  
+  <!-- 信封顶部折叠 -->
+  <path d="M20 38L64 64L108 38" stroke="#e0e0e0" stroke-width="4"/>
+  
+  <!-- 时钟/临时指示器 -->
+  <circle cx="88" cy="40" r="18" fill="#ff5252" stroke="white" stroke-width="3"/>
+  
+  <!-- 时钟指针 -->
+  <line x1="88" y1="40" x2="88" y2="30" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <line x1="88" y1="40" x2="95" y2="45" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  
+  <!-- 邮件内容线条 -->
+  <line x1="40" y1="52" x2="88" y2="52" stroke="#e0e0e0" stroke-width="3"/>
+  <line x1="40" y1="64" x2="88" y2="64" stroke="#e0e0e0" stroke-width="3"/>
+  <line x1="40" y1="76" x2="88" y2="76" stroke="#e0e0e0" stroke-width="3"/>
+</svg> 

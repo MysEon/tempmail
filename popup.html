@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>临时邮箱</title>
+  <style>
+    :root {
+      --primary-color: #4285f4;
+      --primary-dark: #3367d6;
+      --accent-color: #ff5252;
+      --text-color: #333;
+      --text-secondary: #666;
+      --bg-color: #fff;
+      --bg-light: #f5f8ff;
+      --border-color: #e0e0e0;
+      --shadow-color: rgba(0, 0, 0, 0.1);
+    }
+    
+    /* 暗黑模式样式 */
+    [data-theme="dark"] {
+      --primary-color: #5c9aff;
+      --primary-dark: #4285f4;
+      --accent-color: #ff6b6b;
+      --text-color: #e0e0e0;
+      --text-secondary: #aaaaaa;
+      --bg-color: #202124;
+      --bg-light: #303134;
+      --border-color: #444444;
+      --shadow-color: rgba(0, 0, 0, 0.3);
+    }
+    
+    body {
+      font-family: 'Microsoft YaHei', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      width: 400px;
+      min-width: 380px;
+      max-width: 100%;
+      box-sizing: border-box;
+      overflow-x: hidden;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 100%;
+      padding: 16px;
+      box-sizing: border-box;
+      overflow-x: hidden;
+    }
+    
+    .header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .header-icon {
+      width: 32px;
+      height: 32px;
+      margin-right: 10px;
+      flex-shrink: 0;
+    }
+    
+    h1 {
+      font-size: 20px;
+      margin: 0;
+      color: var(--primary-color);
+      font-weight: 500;
+      flex: 1;
+    }
+    
+    .input-group {
+      display: flex;
+      margin-bottom: 16px;
+      width: 100%;
+      position: relative;
+      box-shadow: 0 2px 5px var(--shadow-color);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    
+    #email-address {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 14px;
+      width: 100%;
+      box-sizing: border-box;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+      transition: border-color 0.3s;
+    }
+    
+    #email-address:focus {
+      outline: none;
+      border-color: var(--primary-color);
+    }
+    
+    .btn-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 20px;
+      width: 100%;
+    }
+    
+    button {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      background-color: var(--primary-color);
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+      font-weight: 500;
+      box-shadow: 0 2px 5px var(--shadow-color);
+    }
+    
+    button:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px var(--shadow-color);
+    }
+    
+    button:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 3px var(--shadow-color);
+    }
+    
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    #generate-btn {
+      background-color: var(--accent-color);
+      grid-column: span 2;
+    }
+    
+    #generate-btn:hover {
+      background-color: #e64a4a;
+    }
+    
+    #status {
+      margin-bottom: 16px;
+      color: var(--text-secondary);
+      font-size: 13px;
+      text-align: center;
+      padding: 8px;
+      background-color: var(--bg-light);
+      border-radius: 4px;
+    }
+    
+    .expiry-settings {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .expiry-settings label {
+      margin-right: 10px;
+    }
+    
+    .expiry-settings select {
+      padding: 8px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+    }
+    
+    .expiry-settings #expiry-info {
+      margin-left: 10px;
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+    
+    .refresh-btn-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    
+    #refresh-btn {
+      padding: 8px 20px;
+      background-color: var(--primary-color);
+      font-size: 14px;
+      margin: 0 auto;
+    }
+    
+    .emails-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 10px;
+    }
+    
+    .emails-title {
+      font-weight: 500;
+      color: var(--primary-color);
+    }
+    
+    #emails-container {
+      max-height: 320px;
+      overflow-y: auto;
+      width: 100%;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      background-color: var(--bg-light);
+    }
+    
+    .email-item {
+      padding: 12px;
+      border-bottom: 1px solid var(--border-color);
+      cursor: pointer;
+      transition: background-color 0.2s;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .email-item:last-child {
+      border-bottom: none;
+    }
+    
+    .email-item:hover {
+      background-color: var(--bg-color);
+    }
+    
+    .email-subject {
+      font-weight: bold;
+      margin-bottom: 5px;
+      word-break: break-word;
+    }
+    
+    .email-from, .email-date {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 3px;
+    }
+    
+    .email-unread {
+      position: relative;
+    }
+    
+    .email-unread::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background-color: var(--accent-color);
+    }
+    
+    .no-emails, .loading {
+      padding: 20px;
+      text-align: center;
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+    
+    .open-site-link {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 13px;
+    }
+    
+    .open-site-link a {
+      color: var(--primary-color);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    
+    .open-site-link a:hover {
+      color: var(--primary-dark);
+      text-decoration: underline;
+    }
+    
+    /* 主题切换按钮 */
+    .theme-switch {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 30px;
+      height: 30px;
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.3s;
+      box-shadow: none;
+      padding: 0;
+    }
+    
+    .theme-switch:hover {
+      background-color: rgba(0, 0, 0, 0.1);
+      transform: none;
+      box-shadow: none;
+    }
+    
+    .theme-switch svg {
+      width: 20px;
+      height: 20px;
+      fill: var(--text-secondary);
+      transition: all 0.3s;
+    }
+    
+    .theme-switch:hover svg {
+      fill: var(--primary-color);
+    }
+    
+    [data-theme="dark"] .theme-switch-sun {
+      display: block;
+    }
+    
+    [data-theme="dark"] .theme-switch-moon {
+      display: none;
+    }
+    
+    [data-theme="light"] .theme-switch-sun {
+      display: none;
+    }
+    
+    [data-theme="light"] .theme-switch-moon {
+      display: block;
+    }
+    
+    /* 加载动画 */
+    .loading-spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(66, 133, 244, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--primary-color);
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* 邮件模态框样式 */
+    #email-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg-color);
+      z-index: 1000;
+      display: none;
+      flex-direction: column;
+    }
+    
+    #modal-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      background-color: var(--bg-light);
+      border-radius: 8px;
+      margin: 8px;
+    }
+    
+    .email-modal-header {
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid var(--border-color);
+      background-color: var(--bg-color);
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    
+    .email-modal-subject {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      word-break: break-word;
+      color: var(--primary-color);
+    }
+    
+    .email-modal-meta {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .email-modal-meta svg {
+      margin-right: 8px;
+      width: 16px;
+      height: 16px;
+      opacity: 0.7;
+    }
+    
+    .email-export-options {
+      display: flex;
+      gap: 12px;
+      margin-top: 18px;
+      border-top: 1px dashed var(--border-color);
+      padding-top: 18px;
+    }
+    
+    .export-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 6px;
+      background-color: var(--bg-light);
+      color: var(--text-color);
+      border: 1px solid var(--border-color);
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+      font-weight: 500;
+    }
+    
+    .export-btn:hover {
+      background-color: var(--primary-color);
+      color: white;
+      border-color: var(--primary-color);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .export-btn:hover svg {
+      stroke: white;
+    }
+    
+    .export-btn svg {
+      stroke: var(--primary-color);
+      transition: all 0.2s;
+    }
+    
+    .email-modal-content {
+      line-height: 1.6;
+      overflow-wrap: break-word;
+      width: 100%;
+      box-sizing: border-box;
+      background-color: var(--bg-color);
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      font-size: 15px;
+    }
+    
+    .modal-content {
+      background-color: var(--bg-color);
+      margin: 15px;
+      padding: 0;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px var(--shadow-color);
+      display: flex;
+      flex-direction: column;
+      max-height: 95vh;
+      max-width: 95vw;
+      width: auto;
+      animation: modalFadeIn 0.3s ease-out;
+    }
+    
+    @keyframes modalFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .close {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      color: var(--text-secondary);
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 10;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background-color: var(--bg-light);
+      transition: all 0.2s;
+    }
+    
+    .close:hover {
+      background-color: var(--primary-color);
+      color: white;
+      transform: rotate(90deg);
+    }
+    
+    /* 确保内容全宽显示 */
+    #modal-content {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+    
+    /* 确保模态框内部元素不会溢出 */
+    #modal-content * {
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+    
+    /* 图片最大宽度限制 */
+    #modal-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 6px;
+    }
+    
+    /* 表格样式调整 */
+    #modal-content table {
+      width: 100% !important;
+      max-width: 100% !important;
+      overflow-x: auto;
+      display: block;
+      border-collapse: collapse;
+      margin: 15px 0;
+    }
+    
+    #modal-content table td,
+    #modal-content table th {
+      padding: 8px;
+      border: 1px solid var(--border-color);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="icons/icon32.png" alt="临时邮箱" class="header-icon">
+      <h1>临时邮箱</h1>
+    </div>
+    
+    <div class="input-group">
+      <input type="text" id="email-address" readonly placeholder="点击下方按钮生成临时邮箱">
+    </div>
+    
+    <div class="btn-group">
+      <button id="generate-btn">生成临时邮箱</button>
+      <button id="copy-btn" disabled>复制</button>
+      <button id="fill-btn" disabled>填充到页面</button>
+    </div>
+    
+    <div class="expiry-settings">
+      <label for="expiry-time">邮箱有效期：</label>
+      <select id="expiry-time">
+        <option value="0">不过期</option>
+        <option value="1">1小时</option>
+        <option value="6">6小时</option>
+        <option value="12">12小时</option>
+        <option value="24" selected>24小时</option>
+        <option value="48">48小时</option>
+        <option value="72">3天</option>
+        <option value="168">7天</option>
+      </select>
+      <div id="expiry-info">邮箱将在生成后24小时内有效</div>
+    </div>
+    
+    <div class="refresh-btn-container">
+      <button id="refresh-btn" disabled>刷新邮件</button>
+    </div>
+    
+    <div id="status">点击生成按钮创建临时邮箱</div>
+    
+    <div class="emails-header">
+      <div class="emails-title">收件箱</div>
+    </div>
+    
+    <div id="emails-container">
+      <div class="no-emails">请先生成临时邮箱</div>
+    </div>
+    
+    <div class="open-site-link">
+      <a href="https://mail.cx" target="_blank">访问Mail.cx官方网站</a>
+    </div>
+  </div>
+  
+  <div id="email-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <div class="email-modal-header">
+        <div class="email-modal-subject" id="modal-subject"></div>
+        <div class="email-modal-meta" id="modal-from"></div>
+        <div class="email-modal-meta" id="modal-date"></div>
+        <div class="email-export-options">
+          <button id="export-pdf" class="export-btn" title="导出为PDF">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+            导出PDF
+          </button>
+          <button id="export-html" class="export-btn" title="导出为HTML">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="4 7 4 4 20 4 20 7"></polyline>
+              <line x1="9" y1="20" x2="15" y2="20"></line>
+              <line x1="12" y1="4" x2="12" y2="20"></line>
+            </svg>
+            导出HTML
+          </button>
+        </div>
+      </div>
+      <div class="email-modal-content" id="modal-content"></div>
+    </div>
+  </div>
+  
+  <div class="theme-switch">
+    <svg class="theme-switch-sun" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+      <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zm1.414 1.414a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 10a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm11-2a1 1 0 110 2h-1a1 1 0 110-2h1zm-7 4a2 2 0 11-4 0 2 2 0 014 0z" />
+    </svg>
+    <svg class="theme-switch-moon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+      <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+    </svg>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html> 
