@@ -104,13 +104,8 @@ document.addEventListener('DOMContentLoaded', async function() {
       // 清空邮件列表，显示等待消息
       emailsContainer.innerHTML = '<div class="loading">正在检查邮箱，请稍候...</div>';
       
-      // 显示通知
-      chrome.notifications.create({
-        type: 'basic',
-        iconUrl: 'icons/icon128.png',
-        title: '临时邮箱已生成',
-        message: email
-      });
+      // 不再显示通知，减少干扰
+      console.log('临时邮箱已生成:', email);
       
       // 立即抓取邮件列表
       fetchEmails();
@@ -708,25 +703,15 @@ document.addEventListener('DOMContentLoaded', async function() {
       
       statusElement.textContent = '附件下载完成';
       
-      // 显示下载成功消息
-      chrome.notifications.create({
-        type: 'basic',
-        iconUrl: 'icons/icon128.png',
-        title: '附件下载成功',
-        message: `成功下载文件: ${filename}`
-      });
+      // 不再显示下载成功通知
+      console.log('附件下载成功:', filename);
     })
     .catch(error => {
       console.error('下载附件失败:', error);
       statusElement.textContent = '下载附件失败';
       
-      // 显示错误通知
-      chrome.notifications.create({
-        type: 'basic',
-        iconUrl: 'icons/icon128.png',
-        title: '附件下载失败',
-        message: error.message
-      });
+      // 不再显示错误通知
+      console.error('附件下载失败:', error.message);
     });
   }
   
@@ -1072,13 +1057,8 @@ function checkEmailExpiry() {
         // 清除存储
         chrome.storage.sync.remove(['currentEmail', 'emailGeneratedTime', 'emailExpiryTime']);
         
-        // 显示通知
-        chrome.notifications.create({
-          type: 'basic',
-          iconUrl: 'icons/icon128.png',
-          title: '临时邮箱已过期',
-          message: '您的临时邮箱已过期，请重新生成一个新的邮箱。'
-        });
+        // 不再显示过期通知
+        console.log('临时邮箱已过期');
       } else {
         // 如果邮箱即将过期（小于30分钟），显示警告
         const timeLeft = data.emailExpiryTime - now;

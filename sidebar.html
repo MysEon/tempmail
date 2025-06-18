@@ -223,9 +223,19 @@
       position: absolute;
       top: 0;
       left: 0;
-      z-index: 2;
+      z-index: 100;
       overflow: hidden;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+      animation: slideInRight 0.3s ease-out;
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+      }
+      to {
+        transform: translateX(0);
+      }
     }
     
     .email-content-header {
@@ -235,6 +245,8 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
     
     #back-to-list {
@@ -268,22 +280,25 @@
       opacity: 0.9;
     }
     
-    #email-content-message {
-      padding: 0;
-      overflow-y: auto;
-      flex: 1;
-      background-color: var(--bg-light);
-      display: flex;
-      justify-content: center;
-    }
-    
     .email-content-body {
       display: flex;
       flex-direction: column;
-      padding: 0;
       flex: 1;
-      overflow-y: auto;
+      overflow: hidden;
       background-color: var(--bg-light);
+    }
+
+    #email-content-message {
+      padding: 20px;
+      overflow-y: auto;
+      flex: 1;
+      background-color: var(--bg-color);
+      margin: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      line-height: 1.6;
+      font-size: 14px;
+      color: var(--text-color);
     }
     
     #email-content-message img {
@@ -293,29 +308,56 @@
       margin: 10px 0;
     }
     
-    /* 确保邮件内容正确显示 */
-    #email-content-message table, 
-    #email-content-message td, 
-    #email-content-message th, 
-    #email-content-message div {
-      max-width: 100% !important;
-      width: auto !important;
-      height: auto !important;
-      box-sizing: border-box;
-    }
-    
-    /* 修复表格显示 */
-    #email-content-message table {
-      display: block;
-      overflow-x: auto;
-      width: 100% !important;
-    }
-    
-    /* 添加更强的样式限制，确保内容不会溢出 */
+    /* 邮件内容样式隔离和安全 */
     #email-content-message * {
-      max-width: 100%;
-      word-break: break-word;
-      overflow-wrap: break-word;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+      word-wrap: break-word !important;
+      overflow-wrap: break-word !important;
+    }
+
+    #email-content-message img {
+      max-width: 100% !important;
+      height: auto !important;
+      border-radius: 4px;
+      margin: 8px 0;
+      display: block;
+    }
+
+    #email-content-message table {
+      width: 100% !important;
+      max-width: 100% !important;
+      table-layout: fixed !important;
+      border-collapse: collapse;
+      margin: 10px 0;
+      overflow-x: auto;
+      display: block;
+    }
+
+    #email-content-message table td,
+    #email-content-message table th {
+      padding: 8px;
+      border: 1px solid var(--border-color);
+      word-wrap: break-word !important;
+      overflow-wrap: break-word !important;
+      vertical-align: top;
+    }
+
+    #email-content-message iframe,
+    #email-content-message script,
+    #email-content-message object,
+    #email-content-message embed {
+      display: none !important;
+    }
+
+    #email-content-message a {
+      color: var(--primary-color);
+      text-decoration: none;
+      word-break: break-all;
+    }
+
+    #email-content-message a:hover {
+      text-decoration: underline;
     }
     
     /* 响应式调整 */
@@ -323,19 +365,58 @@
       .sidebar-header {
         padding: 12px;
       }
-      
+
       #email-address {
         max-width: 180px;
         font-size: 14px;
       }
-      
+
       .action-buttons {
         gap: 6px;
       }
-      
+
       #refresh-emails, #copy-email, #close-sidebar {
         padding: 6px 8px;
         font-size: 12px;
+      }
+
+      .email-content-header {
+        padding: 12px;
+      }
+
+      #email-content-subject {
+        font-size: 16px;
+      }
+
+      .email-export-options {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .export-btn {
+        justify-content: center;
+        padding: 8px 12px;
+      }
+
+      #email-content-message {
+        padding: 15px;
+        margin: 10px;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .email-export-options {
+        flex-direction: column;
+      }
+
+      .export-btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      #back-to-list {
+        padding: 8px 12px;
+        font-size: 13px;
       }
     }
     

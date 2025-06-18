@@ -21,12 +21,26 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   return true;
 });
 
+// 生成随机字符串
+function generateRandomString(length) {
+  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * chars.length);
+    result += chars.charAt(randomIndex);
+  }
+
+  return result;
+}
+
 // 自动生成邮箱并通知content.js填充
 function generateEmailAndFill(tabId) {
-  // 生成随机邮箱地址
-  const randomUsername = 'temp' + Math.random().toString(36).substring(2, 10);
-  const email = `${randomUsername}@mail.cx`;
-  
+  // 生成随机邮箱地址 - 使用与popup.js相同的逻辑
+  const username = generateRandomString(10);
+  const domain = 'nqmo.com';
+  const email = `${username}@${domain}`;
+
   // 保存到storage
   chrome.storage.local.set({
     tempEmail: email,
@@ -38,21 +52,12 @@ function generateEmailAndFill(tabId) {
       action: 'fillEmail',
       email: email
     });
-    
+
     // 通知所有其他打开的标签页更新邮箱
     notifyAllTabsToUpdateEmail(email, tabId);
-    
-    // 显示通知
-    try {
-      chrome.notifications.create({
-        type: 'basic',
-        iconUrl: 'icons/icon128.png',
-        title: '临时邮箱已生成',
-        message: `已生成临时邮箱: ${email}，并自动填充到表单`
-      });
-    } catch (error) {
-      console.error('通知创建失败', error);
-    }
+
+    // 不再显示通知，减少干扰
+    console.log('临时邮箱已生成并填充:', email);
   });
 }
 
@@ -80,36 +85,26 @@ function notifyAllTabsToUpdateEmail(email, exceptTabId) {
 // 在显示邮箱输入框的页面上显示图标提示
 function showPageActionIcon(tabId) {
   const now = Date.now();
-  
+
   // 检查是否在短时间内已经显示过通知，防止频繁通知
-  if (lastNotificationTimeByTab[tabId] && (now - lastNotificationTimeByTab[tabId] < 30000)) { // 30秒内不重复显示
+  if (lastNotificationTimeByTab[tabId] && (now - lastNotificationTimeByTab[tabId] < 300000)) { // 5分钟内不重复显示
     return;
   }
-  
+
   // 更新最近通知时间
   lastNotificationTimeByTab[tabId] = now;
-  
+
   // 获取已保存的邮箱
   chrome.storage.local.get(['tempEmail'], function(result) {
-    // 如果已经有临时邮箱，显示通知
+    // 如果已经有临时邮箱，只显示图标徽章，不显示通知
     if (result.tempEmail) {
       chrome.action.setBadgeText({
         text: '📧',
         tabId: tabId
       });
-      
-      // 尝试显示通知，如果没有通知权限则跳过
-      try {
-        chrome.notifications.create({
-          type: 'basic',
-          iconUrl: 'icons/icon128.png',
-          title: '检测到邮箱输入框',
-          message: '点击插件图标使用临时邮箱 ' + result.tempEmail
-        });
-      } catch (error) {
-        console.error('通知创建失败', error);
-        // 没有通知权限时静默失败
-      }
+
+      // 不再显示通知，只在控制台记录
+      console.log('检测到邮箱输入框，临时邮箱可用:', result.tempEmail);
     }
   });
 }

@@ -6,145 +6,228 @@
   <title>临时邮箱</title>
   <style>
     :root {
-      --primary-color: #4285f4;
-      --primary-dark: #3367d6;
-      --accent-color: #ff5252;
-      --text-color: #333;
-      --text-secondary: #666;
-      --bg-color: #fff;
-      --bg-light: #f5f8ff;
+      --primary-color: #000000;
+      --primary-dark: #1a1a1a;
+      --primary-light: #f8f8f8;
+      --accent-color: #666666;
+      --accent-dark: #333333;
+      --success-color: #000000;
+      --warning-color: #666666;
+      --error-color: #000000;
+      --text-color: #000000;
+      --text-secondary: #666666;
+      --text-light: #999999;
+      --bg-color: #ffffff;
+      --bg-light: #ffffff;
+      --bg-gradient: #ffffff;
       --border-color: #e0e0e0;
-      --shadow-color: rgba(0, 0, 0, 0.1);
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+      --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.12);
+      --radius-sm: 4px;
+      --radius-md: 6px;
+      --radius-lg: 8px;
     }
     
     /* 暗黑模式样式 */
     [data-theme="dark"] {
-      --primary-color: #5c9aff;
-      --primary-dark: #4285f4;
-      --accent-color: #ff6b6b;
-      --text-color: #e0e0e0;
-      --text-secondary: #aaaaaa;
-      --bg-color: #202124;
-      --bg-light: #303134;
-      --border-color: #444444;
-      --shadow-color: rgba(0, 0, 0, 0.3);
+      --primary-color: #ffffff;
+      --primary-dark: #f0f0f0;
+      --primary-light: #2a2a2a;
+      --accent-color: #cccccc;
+      --accent-dark: #999999;
+      --success-color: #ffffff;
+      --warning-color: #cccccc;
+      --error-color: #ffffff;
+      --text-color: #ffffff;
+      --text-secondary: #cccccc;
+      --text-light: #999999;
+      --bg-color: #000000;
+      --bg-light: #000000;
+      --bg-gradient: #000000;
+      --border-color: #333333;
+      --shadow-sm: 0 1px 3px rgba(255, 255, 255, 0.08);
+      --shadow-md: 0 2px 8px rgba(255, 255, 255, 0.1);
+      --shadow-lg: 0 4px 16px rgba(255, 255, 255, 0.12);
     }
     
     body {
-      font-family: 'Microsoft YaHei', Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
       margin: 0;
       padding: 0;
-      width: 400px;
-      min-width: 380px;
+      width: 520px;
+      min-width: 500px;
       max-width: 100%;
       box-sizing: border-box;
       overflow-x: hidden;
-      background-color: var(--bg-color);
+      background: var(--bg-color);
       color: var(--text-color);
+      line-height: 1.5;
     }
-    
+
     .container {
       width: 100%;
       max-width: 100%;
       padding: 16px;
       box-sizing: border-box;
       overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
     
+    /* 卡片样式 */
+    .card {
+      background: var(--bg-color);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      padding: 20px;
+      border: 1px solid var(--border-color);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px);
+    }
+
     .header {
       display: flex;
       align-items: center;
-      margin-bottom: 20px;
+      justify-content: center;
+      padding: 20px 0;
+      background: var(--bg-color);
+      border-radius: var(--radius-lg);
+      margin-bottom: 0;
+      border: 1px solid var(--border-color);
     }
-    
+
     .header-icon {
       width: 32px;
       height: 32px;
-      margin-right: 10px;
+      margin-right: 12px;
       flex-shrink: 0;
     }
-    
+
     h1 {
       font-size: 20px;
       margin: 0;
-      color: var(--primary-color);
-      font-weight: 500;
-      flex: 1;
+      color: var(--text-color);
+      font-weight: 600;
+      letter-spacing: 0.5px;
     }
     
-    .input-group {
-      display: flex;
-      margin-bottom: 16px;
-      width: 100%;
+    .email-card {
       position: relative;
-      box-shadow: 0 2px 5px var(--shadow-color);
-      border-radius: 6px;
       overflow: hidden;
     }
-    
-    #email-address {
-      flex: 1;
-      padding: 12px;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      font-size: 14px;
-      width: 100%;
-      box-sizing: border-box;
-      box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
-      transition: border-color 0.3s;
+
+    .email-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     }
-    
+
+    .input-group {
+      position: relative;
+      margin-bottom: 0;
+    }
+
+    .input-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    #email-address {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-family: 'Monaco', 'Menlo', monospace;
+      background: var(--bg-light);
+      color: var(--text-color);
+      transition: all 0.3s ease;
+      box-sizing: border-box;
+    }
+
     #email-address:focus {
       outline: none;
       border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      background: var(--bg-color);
+    }
+
+    #email-address::placeholder {
+      color: var(--text-light);
+      font-style: italic;
     }
     
     .btn-group {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 20px;
-      width: 100%;
+      gap: 12px;
+      margin-top: 20px;
     }
-    
-    button {
-      padding: 10px 16px;
-      border: none;
-      border-radius: 6px;
-      background-color: var(--primary-color);
-      color: white;
+
+    .btn-primary {
+      grid-column: span 2;
+      background: var(--primary-color);
+      border: 1px solid var(--primary-color);
+      border-radius: var(--radius-md);
+      color: var(--bg-color);
+      font-size: 15px;
+      font-weight: 600;
+      padding: 16px 24px;
       cursor: pointer;
-      font-size: 14px;
-      transition: all 0.2s;
-      font-weight: 500;
-      box-shadow: 0 2px 5px var(--shadow-color);
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-sm);
     }
-    
-    button:hover {
-      background-color: var(--primary-dark);
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      border-color: var(--primary-dark);
       transform: translateY(-1px);
-      box-shadow: 0 4px 8px var(--shadow-color);
+      box-shadow: var(--shadow-md);
     }
-    
-    button:active {
-      transform: translateY(0);
-      box-shadow: 0 2px 3px var(--shadow-color);
+
+    .btn-secondary {
+      background: var(--bg-color);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      color: var(--text-color);
+      font-size: 14px;
+      font-weight: 500;
+      padding: 12px 20px;
+      cursor: pointer;
+      transition: all 0.2s ease;
     }
-    
-    button:disabled {
-      background-color: #ccc;
+
+    .btn-secondary:hover {
+      background: var(--primary-light);
+      border-color: var(--primary-color);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-secondary:disabled {
+      background: var(--bg-light);
+      border-color: var(--border-color);
+      color: var(--text-light);
       cursor: not-allowed;
       transform: none;
       box-shadow: none;
-    }
-    
-    #generate-btn {
-      background-color: var(--accent-color);
-      grid-column: span 2;
-    }
-    
-    #generate-btn:hover {
-      background-color: #e64a4a;
     }
     
     #status {
@@ -157,165 +240,233 @@
       border-radius: 4px;
     }
     
-    .expiry-settings {
+    .card-header {
       display: flex;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--border-color);
     }
-    
+
+    .card-header h3 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-color);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .settings-card {
+      background: var(--bg-color);
+    }
+
+    .inbox-card {
+      background: var(--bg-color);
+    }
+
+    .expiry-settings {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
     .expiry-settings label {
-      margin-right: 10px;
+      font-weight: 600;
+      color: var(--text-color);
+      font-size: 14px;
     }
-    
+
     .expiry-settings select {
-      padding: 8px;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
+      padding: 10px 12px;
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-md);
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-size: 14px;
+      transition: all 0.3s ease;
     }
-    
-    .expiry-settings #expiry-info {
-      margin-left: 10px;
+
+    .expiry-settings select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    #expiry-info {
+      grid-column: span 2;
       color: var(--text-secondary);
-      font-size: 13px;
+      font-size: 12px;
+      padding: 8px 12px;
+      background: var(--bg-light);
+      border-radius: var(--radius-sm);
+      border-left: 2px solid var(--text-secondary);
     }
     
     .refresh-btn-container {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 20px;
+      margin-top: 12px;
     }
-    
-    #refresh-btn {
-      padding: 8px 20px;
-      background-color: var(--primary-color);
+
+    .status-card {
+      background: var(--bg-color);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      text-align: center;
       font-size: 14px;
-      margin: 0 auto;
-    }
-    
-    .emails-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 0;
-      border-bottom: 1px solid var(--border-color);
-      margin-bottom: 10px;
-    }
-    
-    .emails-title {
       font-weight: 500;
-      color: var(--primary-color);
+      color: var(--text-secondary);
+      box-shadow: var(--shadow-sm);
     }
     
     #emails-container {
-      max-height: 320px;
+      max-height: 240px;
       overflow-y: auto;
       width: 100%;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
+      border-radius: var(--radius-md);
       background-color: var(--bg-light);
+      border: 2px solid var(--border-color);
     }
     
     .email-item {
-      padding: 12px;
+      padding: 16px;
       border-bottom: 1px solid var(--border-color);
       cursor: pointer;
-      transition: background-color 0.2s;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      transition: all 0.3s ease;
+      position: relative;
+      background: var(--bg-color);
     }
-    
+
     .email-item:last-child {
       border-bottom: none;
+      border-radius: 0 0 var(--radius-md) var(--radius-md);
     }
-    
+
+    .email-item:first-child {
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+    }
+
     .email-item:hover {
-      background-color: var(--bg-color);
+      background: var(--primary-light);
+      transform: translateX(2px);
+      box-shadow: var(--shadow-sm);
     }
-    
+
     .email-subject {
-      font-weight: bold;
-      margin-bottom: 5px;
+      font-weight: 600;
+      margin-bottom: 8px;
       word-break: break-word;
+      color: var(--text-color);
+      font-size: 14px;
     }
-    
+
     .email-from, .email-date {
       font-size: 12px;
       color: var(--text-secondary);
-      margin-bottom: 3px;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
-    
+
+    .email-from::before {
+      content: '👤';
+      font-size: 10px;
+    }
+
+    .email-date::before {
+      content: '🕒';
+      font-size: 10px;
+    }
+
     .email-unread {
-      position: relative;
+      border-left: 3px solid var(--primary-color);
+      background: var(--primary-light);
     }
-    
-    .email-unread::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 3px;
-      background-color: var(--accent-color);
-    }
-    
+
     .no-emails, .loading {
-      padding: 20px;
+      padding: 40px 20px;
       text-align: center;
       color: var(--text-secondary);
       font-style: italic;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .no-emails::before {
+      content: '📭';
+      font-size: 32px;
+      opacity: 0.5;
     }
     
     .open-site-link {
       text-align: center;
-      margin-top: 15px;
-      font-size: 13px;
+      padding: 12px;
+      background: var(--bg-color);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
     }
-    
+
     .open-site-link a {
-      color: var(--primary-color);
+      color: var(--text-secondary);
       text-decoration: none;
-      transition: color 0.2s;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
-    
+
+    .open-site-link a::before {
+      content: '🌐';
+      font-size: 12px;
+    }
+
     .open-site-link a:hover {
-      color: var(--primary-dark);
-      text-decoration: underline;
+      color: var(--text-color);
+      transform: translateY(-1px);
     }
     
     /* 主题切换按钮 */
     .theme-switch {
       position: absolute;
-      top: 16px;
-      right: 16px;
-      width: 30px;
-      height: 30px;
-      background-color: transparent;
-      border: none;
+      top: 20px;
+      right: 20px;
+      width: 32px;
+      height: 32px;
+      background: var(--bg-color);
+      border: 1px solid var(--border-color);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       border-radius: 50%;
-      transition: all 0.3s;
-      box-shadow: none;
-      padding: 0;
+      transition: all 0.2s ease;
+      z-index: 10;
+      box-shadow: var(--shadow-sm);
     }
-    
+
     .theme-switch:hover {
-      background-color: rgba(0, 0, 0, 0.1);
-      transform: none;
-      box-shadow: none;
+      background: var(--primary-light);
+      border-color: var(--primary-color);
+      transform: scale(1.05);
     }
-    
+
     .theme-switch svg {
-      width: 20px;
-      height: 20px;
+      width: 16px;
+      height: 16px;
       fill: var(--text-secondary);
-      transition: all 0.3s;
+      transition: all 0.2s ease;
     }
-    
+
     .theme-switch:hover svg {
-      fill: var(--primary-color);
+      fill: var(--text-color);
     }
     
     [data-theme="dark"] .theme-switch-sun {
@@ -358,42 +509,60 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: var(--bg-color);
+      background-color: rgba(0, 0, 0, 0.5);
       z-index: 1000;
       display: none;
       flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      box-sizing: border-box;
     }
-    
+
+    .modal-content {
+      background-color: var(--bg-color);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      max-height: 90vh;
+      max-width: 90vw;
+      width: 100%;
+      max-width: 800px;
+      position: relative;
+      animation: modalFadeIn 0.3s ease-out;
+    }
+
     #modal-content {
       flex: 1;
       overflow-y: auto;
-      padding: 16px;
-      background-color: var(--bg-light);
-      border-radius: 8px;
-      margin: 8px;
+      padding: 20px;
+      background-color: var(--bg-color);
+      min-height: 0;
     }
     
     .email-modal-header {
-      margin-bottom: 20px;
-      padding-bottom: 15px;
-      border-bottom: 1px solid var(--border-color);
-      background-color: var(--bg-color);
+      background-color: var(--primary-color);
+      color: white;
       padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      margin: 0;
+      border-radius: 0;
+      box-shadow: none;
+      flex-shrink: 0;
     }
     
     .email-modal-subject {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 600;
       margin-bottom: 12px;
       word-break: break-word;
-      color: var(--primary-color);
+      color: white;
     }
     
     .email-modal-meta {
       font-size: 14px;
-      color: var(--text-secondary);
+      color: rgba(255, 255, 255, 0.9);
       margin-bottom: 8px;
       display: flex;
       align-items: center;
@@ -409,69 +578,91 @@
     .email-export-options {
       display: flex;
       gap: 12px;
-      margin-top: 18px;
-      border-top: 1px dashed var(--border-color);
-      padding-top: 18px;
+      margin-top: 15px;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      padding-top: 15px;
     }
-    
+
     .export-btn {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 8px 16px;
+      gap: 6px;
+      padding: 8px 12px;
       border-radius: 6px;
-      background-color: var(--bg-light);
-      color: var(--text-color);
-      border: 1px solid var(--border-color);
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.2);
       cursor: pointer;
-      font-size: 14px;
+      font-size: 13px;
       transition: all 0.2s;
       font-weight: 500;
     }
-    
+
     .export-btn:hover {
-      background-color: var(--primary-color);
-      color: white;
-      border-color: var(--primary-color);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      background-color: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-1px);
     }
-    
-    .export-btn:hover svg {
-      stroke: white;
-    }
-    
+
     .export-btn svg {
-      stroke: var(--primary-color);
-      transition: all 0.2s;
+      stroke: white;
+      width: 14px;
+      height: 14px;
     }
     
     .email-modal-content {
       line-height: 1.6;
       overflow-wrap: break-word;
+      word-break: break-word;
       width: 100%;
       box-sizing: border-box;
-      background-color: var(--bg-color);
-      padding: 25px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-      font-size: 15px;
+      font-size: 14px;
+      color: var(--text-color);
+    }
+
+    /* 邮件内容样式隔离 */
+    #modal-content {
+      /* 重置所有可能影响布局的样式 */
+    }
+
+    #modal-content * {
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+      word-wrap: break-word !important;
+      overflow-wrap: break-word !important;
+    }
+
+    #modal-content img {
+      max-width: 100% !important;
+      height: auto !important;
+      border-radius: 4px;
+      margin: 8px 0;
+    }
+
+    #modal-content table {
+      width: 100% !important;
+      max-width: 100% !important;
+      table-layout: fixed !important;
+      border-collapse: collapse;
+      margin: 10px 0;
+    }
+
+    #modal-content table td,
+    #modal-content table th {
+      padding: 8px;
+      border: 1px solid var(--border-color);
+      word-wrap: break-word !important;
+      overflow-wrap: break-word !important;
+    }
+
+    #modal-content iframe,
+    #modal-content script,
+    #modal-content object,
+    #modal-content embed {
+      display: none !important;
     }
     
-    .modal-content {
-      background-color: var(--bg-color);
-      margin: 15px;
-      padding: 0;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 5px 15px var(--shadow-color);
-      display: flex;
-      flex-direction: column;
-      max-height: 95vh;
-      max-width: 95vw;
-      width: auto;
-      animation: modalFadeIn 0.3s ease-out;
-    }
+
     
     @keyframes modalFadeIn {
       from {
@@ -486,63 +677,70 @@
     
     .close {
       position: absolute;
-      right: 20px;
-      top: 20px;
-      color: var(--text-secondary);
-      font-size: 28px;
+      right: 15px;
+      top: 15px;
+      color: white;
+      font-size: 24px;
       font-weight: bold;
       cursor: pointer;
       z-index: 10;
-      width: 32px;
-      height: 32px;
+      width: 30px;
+      height: 30px;
       display: flex;
       align-items: center;
       justify-content: center;
       border-radius: 50%;
-      background-color: var(--bg-light);
+      background-color: rgba(255, 255, 255, 0.1);
       transition: all 0.2s;
     }
-    
+
     .close:hover {
-      background-color: var(--primary-color);
-      color: white;
+      background-color: rgba(255, 255, 255, 0.2);
       transform: rotate(90deg);
     }
     
-    /* 确保内容全宽显示 */
-    #modal-content {
-      width: 100%;
-      max-width: 100%;
-      overflow-x: hidden;
+    /* 响应式调整 */
+    @media (max-width: 768px) {
+      #email-modal {
+        padding: 10px;
+      }
+
+      .modal-content {
+        max-width: 95vw;
+        max-height: 95vh;
+      }
+
+      .email-modal-header {
+        padding: 15px;
+      }
+
+      .email-modal-subject {
+        font-size: 16px;
+      }
+
+      .email-export-options {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .export-btn {
+        justify-content: center;
+      }
+
+      #modal-content {
+        padding: 15px;
+      }
     }
-    
-    /* 确保模态框内部元素不会溢出 */
-    #modal-content * {
-      max-width: 100%;
-      box-sizing: border-box;
-    }
-    
-    /* 图片最大宽度限制 */
-    #modal-content img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 6px;
-    }
-    
-    /* 表格样式调整 */
-    #modal-content table {
-      width: 100% !important;
-      max-width: 100% !important;
-      overflow-x: auto;
-      display: block;
-      border-collapse: collapse;
-      margin: 15px 0;
-    }
-    
-    #modal-content table td,
-    #modal-content table th {
-      padding: 8px;
-      border: 1px solid var(--border-color);
+
+    @media (max-width: 480px) {
+      .email-export-options {
+        flex-direction: column;
+      }
+
+      .export-btn {
+        width: 100%;
+        justify-content: center;
+      }
     }
   </style>
 </head>
@@ -552,44 +750,53 @@
       <img src="icons/icon32.png" alt="临时邮箱" class="header-icon">
       <h1>临时邮箱</h1>
     </div>
-    
-    <div class="input-group">
-      <input type="text" id="email-address" readonly placeholder="点击下方按钮生成临时邮箱">
+
+    <div class="card email-card">
+      <div class="input-group">
+        <label class="input-label">邮箱地址</label>
+        <input type="text" id="email-address" readonly placeholder="点击下方按钮生成临时邮箱">
+      </div>
+
+      <div class="btn-group">
+        <button id="generate-btn" class="btn-primary">🎯 生成临时邮箱</button>
+        <button id="copy-btn" class="btn-secondary" disabled>📋 复制</button>
+        <button id="fill-btn" class="btn-secondary" disabled>📝 填充到页面</button>
+      </div>
     </div>
     
-    <div class="btn-group">
-      <button id="generate-btn">生成临时邮箱</button>
-      <button id="copy-btn" disabled>复制</button>
-      <button id="fill-btn" disabled>填充到页面</button>
-    </div>
-    
-    <div class="expiry-settings">
-      <label for="expiry-time">邮箱有效期：</label>
-      <select id="expiry-time">
-        <option value="0">不过期</option>
-        <option value="1">1小时</option>
-        <option value="6">6小时</option>
-        <option value="12">12小时</option>
-        <option value="24" selected>24小时</option>
-        <option value="48">48小时</option>
-        <option value="72">3天</option>
-        <option value="168">7天</option>
-      </select>
+    <div class="card settings-card">
+      <div class="card-header">
+        <h3>⚙️ 设置选项</h3>
+      </div>
+      <div class="expiry-settings">
+        <label for="expiry-time">有效期</label>
+        <select id="expiry-time">
+          <option value="0">不过期</option>
+          <option value="1">1小时</option>
+          <option value="6">6小时</option>
+          <option value="12">12小时</option>
+          <option value="24" selected>24小时</option>
+          <option value="48">48小时</option>
+          <option value="72">3天</option>
+          <option value="168">7天</option>
+        </select>
+      </div>
       <div id="expiry-info">邮箱将在生成后24小时内有效</div>
+
+      <div class="refresh-btn-container">
+        <button id="refresh-btn" class="btn-secondary" disabled>🔄 刷新邮件</button>
+      </div>
     </div>
-    
-    <div class="refresh-btn-container">
-      <button id="refresh-btn" disabled>刷新邮件</button>
-    </div>
-    
-    <div id="status">点击生成按钮创建临时邮箱</div>
-    
-    <div class="emails-header">
-      <div class="emails-title">收件箱</div>
-    </div>
-    
-    <div id="emails-container">
-      <div class="no-emails">请先生成临时邮箱</div>
+
+    <div id="status" class="status-card">点击生成按钮创建临时邮箱</div>
+
+    <div class="card inbox-card">
+      <div class="card-header">
+        <h3>📬 收件箱</h3>
+      </div>
+      <div id="emails-container">
+        <div class="no-emails">请先生成临时邮箱</div>
+      </div>
     </div>
     
     <div class="open-site-link">
@@ -597,7 +804,7 @@
     </div>
   </div>
   
-  <div id="email-modal" class="modal">
+  <div id="email-modal">
     <div class="modal-content">
       <span class="close">&times;</span>
       <div class="email-modal-header">
